@@ -1,0 +1,63 @@
+---
+- name: Nginx config
+  hosts: all
+  become: true
+  vars_files:
+    - products.yaml
+
+  tasks:
+  - name: Install Nginx
+    apt:
+      name: nginx
+      update_cache: true
+      state: present
+  
+  - name: Enable nginx.service
+    service: 
+      name: nginx
+      enabled: yes
+      state: started
+
+  - name: Update nginx default config
+    copy: 
+      src: nginx.conf
+      dest: /etc/nginx/nginx.conf
+    
+  - name: Remove html default and default site
+    file: 
+      dest: '{{ item.dest }}'
+      state: absent
+    loop:
+      - { dest: "/etc/nginx/sites-enabled/default" }
+      - { dest: "/var/www/html/index.nginx-debian.html" }
+    notify: reload nginx
+
+  - name: Copy site conf template
+    template:
+      src: site.conf.j2
+      dest: /etc/nginx/sites-available/site.conf
+
+  - name: Create symlink
+    file:
+      src: /etc/nginx/sites-available/site.conf
+      dest: /etc/nginx/sites-enabled/site.conf
+      state: link
+    notify: reload nginx
+
+  - name: Create html templates loop
+    template:
+      src: product.j2
+      dest: "/var/www/html/{{ item.name | lower }}.html"
+    loop: "{{ products }}"
+
+  - name: "Create index.html" 
+    template:
+      src: index.j2
+      dest: /var/www/html/index.html     
+    loop: "{{ products }}"
+  
+  handlers: 
+  - name: reload nginx
+    service:
+      name: nginx
+      state: reloaded

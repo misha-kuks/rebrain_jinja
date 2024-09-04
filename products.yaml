@@ -1,0 +1,35 @@
+products:
+  - name: orange
+    price: 160
+    currency: rub
+    serving: 1
+    measure: kg
+    description: "Salustiana"
+
+  - name: apple
+    price: 220
+    currency: rub
+    serving: 1
+    measure: kg
+    description: "Golden"
+
+  - name: baNana
+    price: 120
+    currency: rub
+    serving: 1
+    measure: kg
+    description: "Lady Finger"
+
+  - name: AvocaDo
+    price: 220
+    currency: rub
+    serving: 2
+    measure: pcs
+    description: Gwen
+
+  - name: cucumber
+    price: 70
+    currency: rub
+    serving: 1
+    measure: pcs
+    description: Bella
